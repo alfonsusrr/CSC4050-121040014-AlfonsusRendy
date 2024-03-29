@@ -1,0 +1,125 @@
+{
+  "dataset": [
+    {
+      "lang": "cpp",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\npublic:\n    vector<int> productExceptSelf(vector<int>& nums) {\n        vector<int>prefVector(nums.size(),1);\n        vector<int>suffVector(nums.size(),1);\n        int prefPro=1;\n        for(int i=0;i<=nums.size();i++){\n            prefVector[i]=prefPro;\n            prefPro*=nums[i];\n        }\n        int suffPro=1;\n        for(int i=nums.size();i>=0;i--){\n            suffVector[i]=suffPro;\n            suffPro*=nums[i];\n        }\n        vector<int>ans(nums.size());\n        for(int i=0;i<nums.size();i++){\n            ans[i]=prefVector[i]*suffVector[i];\n        }\n        return ans;\n    }\n};\n",
+      "reasoning": "\n'nums' array is accessed beyond its size in the prefix and suffix product calculation.\n"
+    },
+    {
+      "lang": "java",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\n    private long maxStrength;\n\n    public long maxStrength(int[] nums) {\n        maxStrength = Integer.MIN_VALUE;\n        helper(nums, 0, 1, 0);\n        return maxStrength;\n    }\n\n    private void helper(int[] nums, int index, long product, int size) {\n        if (index > nums.length) {\n            if(size != 0) maxStrength = Math.max(maxStrength, product);\n            return;\n        }\n\n        helper(nums, index + 1, product * nums[index], size + 1);\n        helper(nums, index + 1, product, size);\n    }\n}\n",
+      "reasoning": "\nThe bug is in the index check, it uses 'index > nums.length' instead of 'index >= nums.length', causing an array index out of bounds exception.\n"
+    },
+    {
+      "lang": "cpp",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\npublic:\n    int longestSubarray(vector<int>& nums) {\n        int n = nums.size();\n        int left = 0, right, zeros = 0, ans = 0;\n\n        for (right = 0; right <= n; right++) {\n            if (nums[right] == 0){\n                zeros++;\n                }\n            if (zeros > 1 && nums[left++] == 0){\n                zeros--;\n                }\n            ans = max(ans, right - left);\n        }\n        return ans; \n    }\n};\n",
+      "reasoning": "\nThe loop iterates beyond the size of the vector, causing array index out of bound errors.\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def findMaximumElegance(self, items: List[List[int]], k: int) -> int:\n        dico=defaultdict(list)\n        for profit,category in items:\n            dico[category].append(profit)\n        categories=[]\n        for category in dico:\n            categories.append(sorted(dico[category]))\n        categories.sort(key=lambda x:x[-1],reverse=True)\n        def elegance (distinct):\n            res=0\n            rest=[]\n            for i in range (distinct):\n                res+=categories[i][-1]\n                for j in range (len(categories[i])-1):\n                    rest.append(categories[i][j])\n            rest.sort(reverse=True)\n            if len(rest)<k-distinct:\n                return -1\n            return res+sum(rest[:k-distinct])+distinct**2\n        l,r=1,min(len(categories)-1,k-1)\n        mid=(l+r)//2\n        while l<r:\n            if elegance(mid+1)>elegance(mid+1) or elegance(mid+1)==-1:\n                l=mid+1\n            else:\n                r=mid\n            mid=(l+r)//2\n        return max(elegance(mid),elegance(mid+1))[-1]\n",
+      "reasoning": "\nThrough incorrect index use, -1 is applied to the \"max\" function result, which will lead to an indexing error.\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def sortString(self, s: str) -> str:\n        freq = {}\n        letters = sorted(set(s))\n        res = \"\"\n        for i in s:\n            if i in freq:\n                freq[i]+=1\n            else:\n                freq[i] = 1\n        while freq:\n            for i in letters:\n                if  i in freq:\n                    if freq[i]>0:\n                        res+=i\n                        freq[i]-=1\n                    else:\n                        del freq[i]\n                        letters = letters[1:]\n\n            for i in letters[::-1]:\n                if  i in freq:\n                    if freq[i]>0:\n                        res+=i\n                        freq[i]-=1\n                    else:\n                        del freq[i]\n                        letters = letters[1:]\n\n        return res\n",
+      "reasoning": "\nDeleting letters from 'letters' could cause an index error as loops are still running.\n"
+    },
+    {
+      "lang": "java",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\n    public int isWinner(int[] player1, int[] player2) {\n        int i=1,j=i-1,k=i-2;\n        int p1=player1[0],p2=player2[0];\n        while(i<=player1.length){\n            if((j>=0 && player1[j]==10 ) || (k>=0 && player1[k]==10)){\n                p1+=2*player1[i];\n            }\n            else{\n                p1+=player1[i];\n            }\n            i++;\n            j++;\n            k++;\n        }\n        int l=1,m=l-1,n=l-2;\n        while(l<=player2.length){\n            if((m>=0 && player2[m]==10 ) || (n>=0 && player2[n]==10)){\n                p2+=2*player2[l];\n            }\n            else{\n                p2+=player2[l];\n            }\n            l++;\n            m++;\n            n++;\n        }\n        if(p1>p2) return 1;\n        else if(p1==p2) return 0;\n        else return 2;\n    }\n}\n",
+      "reasoning": "\nUsed array.length instead of array.length-1 in while loops causing out of bound exception.\n"
+    },
+    {
+      "lang": "java",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\n    public int[] distinctDifferenceArray(int[] nums) {\n        int n=nums.length;\n        int ans[]=new int[n+1];\n        \n        for(int i=0;i<=n;i++){\n            Set<Integer>set1=new HashSet<>();\n            Set<Integer>set2=new HashSet<>();\n            \n            for(int j=0;j<=i;j++){\n                set1.add(nums[j]);\n            }\n            for(int j=i+1;j<n;j++){\n                set2.add(nums[j]);\n            }\n            \n            ans[i]= set1.size() - set2.size();\n        }\n        return ans;\n    }\n}\n",
+      "reasoning": "\nThe bug is an IndexOutOfBounds error, which occurs when trying to access nums[n] in the loop.\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def sequentialDigits(self, low, high):\n        out = []\n        queue = deque(range(1,11))\n        while queue:\n            elem = queue.popleft()\n            if low <= elem <= high:\n                out.append(elem)\n            last = elem % 10\n            if last < 9: queue.append(elem*10 + last + 1)\n                    \n        return out\n",
+      "reasoning": "\nThe deque is initialized with a range from 1 to 11, causing an indexing error.\n"
+    },
+    {
+      "lang": "java",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\n    public boolean checkSubarraySum(int[] nums, int k) {      \n        Map<Integer, Integer> map = new HashMap<>();\n        int sum = 0;\n        for (int i = 0; i <= nums.length; i++) {\n            sum += nums[i];\n            sum %= k; \n            if (sum == 0 && i > 0) return true;\n            if (map.containsKey(sum) && i - map.get(sum) > 1) return true;\n            \n            if(!map.containsKey(sum))map.put(sum, i); \n                        \n        }\n        return false;\n    }\n}\n",
+      "reasoning": "\nIndex i goes out of bounds because the loop runs until i <= nums.length.\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def makeSmallestPalindrome(self, s: str) -> str:\n        before = 0\n        after = len(s)-1\n        l = [i for i in s]\n        while before <= len(s)/2:\n            l[before] = min(l[before], l[after])\n            l[after] = l[before]\n            before+=1\n            after+=1\n        return \"\".join(l)\n",
+      "reasoning": "\nThe variable \"after\" is improperly incremented inside the loop, which results in indexing beyond the list's range.\n"
+    },
+    {
+      "lang": "java",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def maximumRequests(self, n: int, requests: List[List[int]]) -> int:\n        l=len(requests)\n        for i in range(l,-1,-1):\n            for j in combinations(requests,i):\n                if Counter(x for x ,y in j)==Counter(y for x,y in j):\n                    return i\n\n        return 0\n",
+      "reasoning": "\nRange in loop starts from 'l' and ends at '-1' which raises an indexing error.\n"
+    },
+    {
+      "lang": "java",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\n    public int minJumps(int[] arr) {\n        Map<Integer,ArrayList<Integer>>hm=new HashMap<>();\n        for(int i=0;i<=arr.length;i++){\n            if(hm.containsKey(arr[i])){\n                ArrayList<Integer>al=hm.get(arr[i]);\n                al.add(i);\n                hm.put(arr[i],al);\n            }\n            else{\n                ArrayList<Integer>al=new ArrayList<>();\n                al.add(i);\n                hm.put(arr[i],al);\n            }\n        }\n        boolean vis[]=new boolean[arr.length];\n        Queue<Integer>q=new LinkedList<>();\n        q.add(0);\n        int cnt=0;\n        while(!q.isEmpty()){\n            for(int k=q.size();k>0;k--){\n                int n=q.remove();\n                vis[n]=true;\n                if(n==arr.length-1) return cnt;\n                ArrayList<Integer>al=hm.get(arr[n]);\n                al.add(n-1);\n                al.add(n+1);\n                for(int i:al){\n                    if(i>=0&&i<arr.length&&!vis[i]){\n                        q.add(i);\n                    }\n                }\n                al.clear();\n            }\n            cnt++;\n        }\n        return 0;\n    }\n}\n",
+      "reasoning": "\nThe for loop that fills the hashmap is indexing one past the array limit.\n"
+    },
+    {
+      "lang": "cpp",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\npublic:\n    bool isBoomerang(vector<vector<int>>& points) {\n        float a,b,c,d;\n        a = (points[1][1]-points[0][1]);\n        b = (points[1][0]-points[0][0]);\n        c = (points[2][1]-points[1][1]);\n        d = (points[3][0]-points[1][0]);\n        if((b!=0 && d!=0 && a*d==b*c) || (b==0 && d==0 && points[0][0]==points[1][0]))\n        {\n            return false;\n        }\n        if((points[0][0]==points[1][0] && points[0][1]==points[1][1]) || (points[0][0]==points[2][0] && points[0][1]==points[2][1]) || (points[1][0]==points[2][0] && points[1][1]==points[2][1]))\n        {\n            return false;\n        }\n        return true;\n    }\n};\n",
+      "reasoning": "\nArray index out of bound, accessing points[3][0] in a vector of length 3 only.\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def findSubstring(self, s: str, words: List[str]) -> List[int]:\n        wlen= len(words[0])\n        slen= wlen*len(words)\n        track=dict()\n        \n        occ = collections.Counter(words)\n\n        def test():\n            for key, val in track.items():\n                if val !=occ[key]:\n                    return False\n            return True\n        res=[]\n        #first look\n\n        for k in range(wlen):\n            for i in words:\n                track.update({i : 0})\n            for i in range(k,slen+k,wlen):\n                w=s[i:i+wlen]\n                if w in words:\n                    track.update({w: track[w]+1})\n            if test():\n                res.append(k)\n            #complete\n            for i in range(wlen+k, len(s)-slen+1,wlen):\n                \n                nw=s[i+slen-wlen:i+slen]\n                pw=s[i-wlen:i]\n                if nw in words:\n                    track.update({nw: track[nw]+1})\n                if pw in words:\n                    track.update({pw: track[pw]-1})\n                if test():\n                    res.append(i+wlen)\n        return res\n",
+      "reasoning": "\nThe index 'i+wlen' to append in res is out of bounds when 'i' equals to 'len(s)-1'.\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\n\"\"\"\n# Definition for a Node.\nclass Node:\n    def __init__(self, val=None, children=None):\n        self.val = val\n        self.children = children\n\nclass Solution:\n    def maxDepth(self, root: 'Node') -> int:\n        if root == None:\n            return 0\n        else:\n            depth = 0\n            nodes_queue = [root]\n            next_nodes_queue = []\n            while(nodes_queue):\n                node_out = nodes_queue.pop(0)\n                for child in node_out.children[1]:   \n                    next_nodes_queue.append(child)\n                if nodes_queue == []:\n                    nodes_queue, next_nodes_queue = next_nodes_queue, nodes_queue\n                    depth += 1\n            return depth\n\"\"\"\n\n",
+      "reasoning": "\nThe indexing error occurs because we're trying to access the second children of 'node_out', which may not exist.\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def totalMoney(self, n: int) -> int:\n        income=1;a=[1];ans=0\n        for i in range(n):\n            if i%7==0 and i!=0:income=(a[len(a)-8])\n            ans+=income;income+=1;a.append(income)\n        return ans\n",
+      "reasoning": "\nThe index at len(a)-8 will throw an indexing error before the 8th day.\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def restoreIpAddresses(self, s: str) -> List[str]:\n        res=[]\n        cur=[]\n        def backtrack(i):\n            if i==len(s) and len(cur)==4:\n                res.append(\".\".join(cur))\n                return\n            if len(cur)>4 or i>len(s):\n                return\n            if s[i]=='0':\n                cur.append(s[i])\n                backtrack(i+1)\n                cur.pop()\n                return\n            j=0\n            while j<4 and i+j<len(s):\n                if int(s[i:i+j+1])<256:\n                    cur.append(s[i:i+j+1])\n                    backtrack(i+j+1)\n                    cur.pop()\n                j+=1\n        backtrack(0)\n        return res\n",
+      "reasoning": "\nThe index goes out of range when i equals to len(s) in s[i].\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def maxPower(self, stations: List[int], r: int, k: int) -> int:\n        start, end = min(stations), sum(stations) + k\n        while start + 1 < end:\n            mid = (start + end) // 2\n            if self.check(stations, r, k, mid):\n                start = mid\n            else:\n                end = mid\n        if self.check(stations, r, k, end):\n            return end\n        else:\n            return start\n    \n    def check(self, stations, r, k, target):\n            n = len(stations)\n            ans = True\n            newStations = defaultdict(int)\n            power = sum(stations[ : r])\n            for i in range(n + 1):\n                if i + r < n:\n                    power += stations[i + r]\n                if i - r - 1 >= 0:\n                    power -= stations[i - r - 1]\n                if power >= target:\n                    continue\n                elif power + k < target:\n                    ans = False\n                    break\n                else:\n                    diff = target - power\n                    power = target\n                    stations[min(i + r, n - 1)] += diff\n                    k -= diff\n                    newStations[min(i + r, n - 1)] += diff\n            for i in newStations:\n                stations[i] -= newStations[i]\n            return ans\n",
+      "reasoning": "\nThe for loop should go up to range(n), not range(n+1).\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def checkValidString(self, s):\n        st=[]\n        sr=[]\n        for i in range(len(s)+1): \n            if s[i]=='(':\n                st.append(i)\n            elif s[i]== '*':\n                sr.append(i)\n            else:\n                if st:\n                    st.pop()\n                elif sr:\n                    sr.pop()\n                else:\n                    return False\n        while st:\n            if len(sr)==0:\n                return False\n            elif st[-1]< sr[-1]:\n                st.pop()\n                sr.pop()\n            else:\n                return False\n        return True\n\n",
+      "reasoning": "\nThe bug is in the range of for loop where length s is incremented by 1 causing an indexing error.\n"
+    },
+    {
+      "lang": "cpp",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\npublic:\n    vector<int>dp;\n    int dfs(int node, vector<vector<int>>&adj, vector<int>& quiet){\n        if(dp[node]!=-1) return dp[node];\n\n        int miniVal  = quiet[node];\n        int miniNode = node;\n\n        for(auto it:adj[node+1]){\n            int miniIndex = dfs(it,adj,quiet);\n            if(quiet[miniIndex] < miniVal){\n                miniVal = quiet[miniIndex];\n                miniNode = miniIndex;\n            } \n\n        }\n        return dp[node] = miniNode;        \n    }\n    vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {\n        int n = quiet.size();\n        dp.resize(n,-1);\n        vector<vector<int>>adj(n);\n        vector<int>ans;\n        for(auto it: richer){\n            adj[it[1]].push_back(it[0]);\n        }\n        for(int i =0;i<n;i++){\n            int res = dfs(i,adj,quiet);\n            ans.push_back(res);\n        }\n        return ans;\n    }\n};\n",
+      "reasoning": "\nThe for loop in the dfs function has an indexing error by adding 1 to node.\n"
+    }
+  ],
+  "heuristic": "<heuristic>\n\n**Step-by-Step Automated Fault Localization Heuristic for Index Out of Bounds Errors**\n\n1. **Initialize Variables**: \n   - **I**: Set of all index variables used for array access.\n   - **A**: Set of all arrays (or lists, vectors, etc.) being accessed.\n   - **L**: A mapping from elements in A to their corresponding lengths.\n\n2. **Trace Execution**:\n   - Dynamically trace the execution of the code, recording each access to an array element `a[i]`, where `a \u2208 A` and `i \u2208 I`. This includes accesses in loop conditions, array assignments, and function parameters.\n\n3. **Check Conditions**:\n   For each recorded access `a[i]`, apply the following checks to detect potential out of bounds errors:\n   \n   a. **Upper Bound Check**: If `i >= L[a]`, an upper bound violation is detected. This indicates an attempt to access an element beyond the last valid index of the array `a`. \n      - Mathematically, this can be represented as: \u2200i, a (i \u2265 L[a]) \u2192 UpperBoundError.\n   \n   b. **Lower Bound Check**: If `i < 0`, a lower bound violation is detected. This indicates an attempt to access an element before the first valid index of the array `a`.\n      - Mathematically, this can be represented as: \u2200i (i < 0) \u2192 LowerBoundError.\n   \n4. **Loop Analysis**:\n   Specifically analyze loop conditions and iterations if they involve index variables. For a loop that iterates with variable `i` affecting `a[i]`, ensure that the loop bounds do not exceed the valid range of indices for `a`.\n   - Example: For a loop running from `0 to nums.length`, the access `nums[i]` inside the loop should instead respect the typical bounds `[0, nums.length - 1]`.\n\n5. **Report Defective Lines**:\n   If either condition 3a or 3b is met, report the corresponding line as defective due to an Index Out of Bounds Error. Include the specific array and index causing the violation for easier debugging by the developer.\n\n6. **Heuristic Iteration**:\n   This heuristic can be iteratively applied to each function or method within the codebase for comprehensive fault localization relating to Index Out of Bounds Errors.\n\nBy following these steps, the heuristic aims to systematically identify lines of code where Index Out of Bounds Errors occur by analyzing runtime access patterns against the statically known lengths (or dynamically determined lengths) of arrays or similar data structures being accessed.\n\n</heuristic>"
+}

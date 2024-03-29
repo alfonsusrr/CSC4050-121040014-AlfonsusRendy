@@ -1,0 +1,65 @@
+{
+  "dataset": [
+    {
+      "lang": "java",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\n/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    int index;\n    public TreeNode buildTree(int[] inorder, int[] postorder) {\n        Map<Integer, Integer> m = new HashMap<>();\n\n        for(int i = 0; i <= inorder.length; i++) {\n            m.put(inorder[i], i);\n        }\n        index = postorder.length - 1;\n        return buildTree(0, postorder.length - 1, postorder, m);\n    }\n\n    private TreeNode buildTree(int l, int r, int postorder[] , Map<Integer, Integer> m) {\n        if(l > r) return null;\n\n        int val = postorder[index];\n        index--;\n\n        TreeNode root = new TreeNode(val);\n        if(l == r) return root;\n\n        int in = m.get(val);\n\n        root.right = buildTree(in + 1, r, postorder, m);\n        root.left = buildTree(l, in - 1, postorder, m);\n\n        return root;\n    }\n}\n",
+      "reasoning": "\nThe indexing error occurs when iterating over the inorder array, resulting in an ArrayIndexOutOfBoundsException.\n"
+    },
+    {
+      "lang": "cpp",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\npublic:\n    int findTheWinner(int n, int k) {\n        vector<int> v;\n        for (int i=1; i<=n+1; i++)v.push_back(i);\n        int i=0;\n        while (v.size() != 1){\n            i= (i+k-1)%(v.size());\n            //cout<<v[i]<<endl;\n            v.erase(v.begin()+i);\n        }\n        return v[0];\n    }\n};\n",
+      "reasoning": "\nIn the for loop, the upper limit was n+1, exceeding the intended maximum value.\n"
+    },
+    {
+      "lang": "cpp",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\npublic:\n    int threeSumClosest(vector<int>& nums, int target) {\n        sort(nums.begin(),nums.end());\n        int prev=nums[0]+nums[1]+nums[2];\n        for(int i=0;i<=nums.size()-1;i++){\n            int j=i+1;\n            int k=nums.size();\n            while(j<k){\n                int sum=nums[i]+nums[j]+nums[k];\n                if(abs(sum-target)<abs(prev-target))\n                prev=sum;\n                \n                if(sum<target)\n                j++;\n                else\n                k--;\n            }\n        }\n        return prev;\n    }\n};\n",
+      "reasoning": "\nIndex error: accessing element at index nums.size() which is out of bounds.\n"
+    },
+    {
+      "lang": "java",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\n    private long[] dp;\n    int MOD = (int)Math.pow(10 , 9) + 7;\n    public long solve(int n){\n        if(n==0) return 1;\n        if(n<3) return n;\n\n        if(dp[n+2]!=-1) return dp[n];\n\n        return dp[n] = 2*solve(n-1)%MOD+solve(n-3)%MOD;\n    }\n    public int numTilings(int n) {\n        this.dp = new long[n+1];\n        Arrays.fill(dp , -1);\n\n        return (int)solve(n)%MOD;\n    }\n}\n",
+      "reasoning": "\nTrying to access dp[n+2] could cause \"ArrayIndexOutOfBoundsException\" if n equals dp.length - 1.\n"
+    },
+    {
+      "lang": "cpp",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\npublic:\n\nvector<int> countsort(vector<int> &nums)\n{\n    int n = nums.size();\n    map<int, int> m;\n    for (int i = 0; i < n; i++ )\n        m[nums[i]]++;\n\n    nums.clear();\n    for (auto it : m)\n    {\n        int cnt = it.second;\n        while (cnt--)\n        {\n            nums.push_back(it.first);\n        }\n    }\n    return nums;\n}\n\nint maximumGap(vector<int> &nums)\n{\n    int n = nums.size();\n    if (n < 2)\n        return 0;\n    vector<int> sortednums = countsort(nums);\n\n    int maxgap = INT_MIN;\n    for (int i = 1; i <= n; i++)\n    {\n        int currgap = sortednums[i] - sortednums[i - 1];\n        maxgap = max(maxgap, currgap);\n    }\n\n    return maxgap;\n}\n};\n",
+      "reasoning": "\nIn maximumGap function, trying to access element with index n in sortednums array, which is out of bound.\n"
+    },
+    {
+      "lang": "cpp",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\npublic:\n    int func(int i,int l,vector<int>&obstacles,vector<vector<int>>&dp){\n        if(i==obstacles.size()-2){\n            if(obstacles[i+2]==l)return 1;\n            return 0;\n        }\n\n        if(dp[i][l]!=-1)return dp[i][l];\n\n        if(obstacles[i+1]!=l){\n            return dp[i][l] = func(i+1,l,obstacles,dp);\n        }\n\n\n        int b=INT_MAX;\n        for(int j=1;j<=3;j++){\n            if(l==j)continue;\n            if(obstacles[i]==j)continue;\n            b=min(b,1+func(i,j,obstacles,dp));\n        }\n\n\n        return dp[i][l] = b;\n    }\n\n    int minSideJumps(vector<int>& obstacles) {\n        int n=obstacles.size();\n        vector<vector<int>>dp(n,vector<int>(4,-1));\n        return func(0,2,obstacles,dp);\n    }\n};\n\n",
+      "reasoning": "\nThe index out of bounds error occurs during checking the last element of the vector \"obstacles\".\n"
+    },
+    {
+      "lang": "java",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def countNegatives(self, grid: List[List[int]]) -> int:\n        ROWS, COLS = len(grid), len(grid[0])\n        negatives = 0\n        col = 0\n        for row in range(ROWS - 1, -1, -1):\n            while col <= COLS and grid[row][col] >= 0:\n                col += 1\n            negatives += COLS - col\n        return negatives\n",
+      "reasoning": "\nThe bug is in the loop condition \"col <= COLS\", it may lead to array indexing out of bound.\n"
+    },
+    {
+      "lang": "cpp",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\npublic:\n    vector<int> nodesBetweenCriticalPoints(ListNode* head) {\n        vector<int> ans={-1,-1};\n        ListNode* prev=head;\n        if(!prev) return ans;\n        ListNode* curr=prev->next;\n        if(!curr) return ans;\n        ListNode* next=curr->next;\n        if(!next) return ans;\n\n        int first=-1;\n        int last=-1;\n        int mind=INT_MAX;\n        int i=1;\n        while(next){\n            bool iscp=((curr->val>prev->val && curr->val>next->val)||(curr->val<prev->val&&curr->val<next->val))?true:false;\n            if(iscp&&first==-1){\n                first=i;\n                last=i;\n            }\n            else if(iscp){\n                mind=min(mind,i-last);\n                last=i;\n            }\n            i++;\n            prev=curr;\n            curr=next;\n            next=next->next;\n        }\n        if(first==last)\n         return ans;\n         else\n         {\n             ans[0]=mind;\n             ans[2]=last-first;\n         }\n         return ans;\n    }\n};\n",
+      "reasoning": "\nThe bug is that index 2 of a vector with size 2 is being accessed, causing an out of range error.\n"
+    },
+    {
+      "lang": "cpp",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution {\npublic:\n    bool isAnagram(string s, string t) {\n        if(s.length()!=t.length())\n            return false;\n        vector<int> freq(26, 0);\n        for(int i =0; i<=s.length(); i++){\n            freq[s[i]-'a']++;\n            freq[t[i]-'a']--;\n        }\n        for(int i =0; i<freq.size(); i++){\n            if(freq[i]!=0)\n                return false;\n        }\n        return true;\n    }\n};\n",
+      "reasoning": "\nThe loop iterating over the strings s and t can cause an index out of bound error.\n"
+    },
+    {
+      "lang": "python3",
+      "bug_type": "faulty indexing",
+      "buggy_code": "\nclass Solution:\n    def sumSubarrayMins(self, arr: List[int]) -> int:\n        stack = []\n        res = 0\n        arr = [float('-inf')] + arr + [float('-inf')]\n        for i, num in enumerate(arr):\n            while stack and arr[stack[-1]] > num:\n                cur = stack.pop()\n                res += arr[cur] * (i - cur) * (cur - stack[-2])\n            stack.append(i)\n        return res % (10**9 + 7)\n",
+      "reasoning": "\nIndexing error bug - stack[-2] might not exist if there's only one element in stack.\n"
+    }
+  ],
+  "heuristic": "<heuristic> To identify and correct the typical \"Index Out of Bounds\" error within various code snippets, follow this heuristic approach: Begin with a review of the code to understand its intended functionality and data structures involved. Next, identify all loops, conditional statements, and direct indexing operations. For each case, scrutinize the boundary conditions; pay special attention to loop conditions (like `i < length` vs. `i <= length`), array or list index access (e.g., accessing `array[array.length]` or similar operations), and any arithmetic operations that calculate indexes. Examine the cases immediately before and after the current index (e.g., `index - 1` and `index + 1`) to ensure they are within the valid range. Verify that all loop iterators and index calculations correctly account for the zero-based indexing commonly used in programming languages. For sequences, check that any appending or deletion operations adjust indexes or loop conditions accordingly to prevent overshooting the bounds. When identified, adjust the index or condition to ensure it remains within the valid range, including adjusting for inclusive or exclusive limits. Additionally, consider implementing checks or assertions in the code that validate index values at runtime to catch any unexpected out-of-range access dynamically. </heuristic>"
+}
