@@ -4,7 +4,7 @@ import os
 def load_dbench_bug_data():
     """ load data with different languages and bug types """
 
-    SRC_DIR = f"../DebugBench/benchmark"
+    SRC_DIR = f"../../DebugBench/benchmark"
 
     res = {
         'cpp': {

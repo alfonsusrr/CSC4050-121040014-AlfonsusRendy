@@ -19,7 +19,7 @@ def initialize_chat(file_path=None):
             print("Error creating chat history file")
     
     logger = logging.getLogger()
-    model_name="claude-3-opus-patch"
+    model_name="gpt-4"
 
     chat = RemoteChatAgent(API_KEY, model_name, file_path, logger)
     return chat
